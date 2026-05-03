@@ -1,0 +1,4 @@
+PyQt5>=5.15
+pydivert; sys_platform == 'win32'
+NetfilterQueue; sys_platform != 'win32'
+scapy; sys_platform != 'win32'

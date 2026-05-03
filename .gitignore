@@ -180,6 +180,9 @@ cython_debug/
 #  you could uncomment the following to ignore the enitre vscode folder
 # .vscode/
 
+# Runtime files
+firewall_logs.txt
+
 # Ruff stuff:
 .ruff_cache/
 
