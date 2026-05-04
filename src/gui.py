@@ -2,7 +2,7 @@ import os
 import socket
 from urllib.parse import urlparse
 
-from PyQt5.QtCore import Qt, pyqtSlot
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QApplication,
@@ -21,7 +21,9 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from engine import create_engine
+from src.cores import create_engine
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class FirewallGUI(QMainWindow):
@@ -29,7 +31,7 @@ class FirewallGUI(QMainWindow):
         super().__init__()
         self.setWindowTitle("CyberM4fia Firewall")
 
-        icon_path = os.path.join(os.path.dirname(__file__), "icon.png")
+        icon_path = os.path.join(PROJECT_ROOT, "assets", "icon.png")
         if os.path.exists(icon_path):
             self.setWindowIcon(QIcon(icon_path))
 
@@ -52,7 +54,7 @@ class FirewallGUI(QMainWindow):
         self.rule_list = QListWidget()
         self.rule_input = QLineEdit()
         self.rule_input.setPlaceholderText(
-            "Enter Port or IP Rule: (e.g. 192.168.1.1:80 or tcp or 80)..."
+            "Enter rule: tcp, udp, :80, 192.168.1.1:443"
         )
         self.add_rule_button = QPushButton("Add Rule")
         self.add_rule_button.clicked.connect(self.add_rule)
@@ -78,9 +80,7 @@ class FirewallGUI(QMainWindow):
 
         website_layout = QHBoxLayout()
         self.website_input = QLineEdit()
-        self.website_input.setPlaceholderText(
-            "Enter Website URL to Block: (e.g. www.example.com)..."
-        )
+        self.website_input.setPlaceholderText("Enter website to block: www.example.com")
         self.add_website_button = QPushButton("Add Website")
         self.add_website_button.clicked.connect(self.add_website)
         website_layout.addWidget(self.website_input)
@@ -151,6 +151,7 @@ class FirewallGUI(QMainWindow):
             self.firewall_worker.start()
             self.start_button.setEnabled(False)
             self.stop_button.setEnabled(True)
+            self.rules_area.append("Firewall Started")
 
     def add_website(self):
         raw_input = self.website_input.text().strip()
@@ -191,4 +192,4 @@ class FirewallGUI(QMainWindow):
             self.firewall_worker = None
             self.start_button.setEnabled(True)
             self.stop_button.setEnabled(False)
-            self.rules_area.append("Firewall Stopped!")
+            self.rules_area.append("Firewall Stopped")

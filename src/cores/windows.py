@@ -4,7 +4,8 @@ from collections import defaultdict
 
 import pydivert
 
-from engine import BaseEngine, get_protocol_name, log_to_file
+from src.cores.base import BaseEngine
+from src.utils.helpers import get_protocol_name, log_to_file
 
 
 class WindowsEngine(BaseEngine):
@@ -34,9 +35,7 @@ class WindowsEngine(BaseEngine):
                     current_time = time.time()
 
                     self.log_signal.emit(src_ip, dst_ip, protocol)
-                    log_to_file(
-                        f"Packet Seen: {src_ip}:{packet.src_port} -> {dst_ip}:{packet.dst_port}"
-                    )
+                    log_to_file(f"Packet Seen: {src_ip}:{packet.src_port} -> {dst_ip}:{packet.dst_port}")
 
                     if src_ip in self.whitelist:
                         w.send(packet)
@@ -52,14 +51,8 @@ class WindowsEngine(BaseEngine):
                         continue
 
                     self.traffic_tracker[src_ip].append(current_time)
-                    short_window = [
-                        ts for ts in self.traffic_tracker[src_ip]
-                        if current_time - ts <= 1
-                    ]
-                    long_window = [
-                        ts for ts in self.traffic_tracker[src_ip]
-                        if current_time - ts <= 10
-                    ]
+                    short_window = [ts for ts in self.traffic_tracker[src_ip] if current_time - ts <= 1]
+                    long_window = [ts for ts in self.traffic_tracker[src_ip] if current_time - ts <= 10]
                     self.traffic_tracker[src_ip] = long_window
 
                     if len(short_window) > 10000 or len(long_window) > 50000:
@@ -69,9 +62,7 @@ class WindowsEngine(BaseEngine):
                         )
                         self.blacklist.add(src_ip)
                         log_to_file(f"DDoS Detected and Blocked: {src_ip}", level="warning")
-                        threading.Thread(
-                            target=self.remove_from_blacklist, args=(src_ip,)
-                        ).start()
+                        threading.Thread(target=self.remove_from_blacklist, args=(src_ip,)).start()
                         continue
 
                     blocked = False
@@ -81,7 +72,7 @@ class WindowsEngine(BaseEngine):
                         if rule_lower == "tcp" and protocol.lower() == "tcp":
                             self.rules_signal.emit("TCP Packet Blocked by Rule!")
                             log_to_file(
-                                f"Blocked TCP by Rule: {src_ip}:{packet.src_port} -> {dst_ip}:{packet.dst_port}",
+                                f"Blocked TCP: {src_ip}:{packet.src_port} -> {dst_ip}:{packet.dst_port}",
                                 level="warning",
                             )
                             blocked = True
@@ -90,7 +81,7 @@ class WindowsEngine(BaseEngine):
                         if rule_lower == "udp" and protocol.lower() == "udp":
                             self.rules_signal.emit("UDP Packet Blocked by Rule!")
                             log_to_file(
-                                f"Blocked UDP by Rule: {src_ip}:{packet.src_port} -> {dst_ip}:{packet.dst_port}",
+                                f"Blocked UDP: {src_ip}:{packet.src_port} -> {dst_ip}:{packet.dst_port}",
                                 level="warning",
                             )
                             blocked = True
@@ -100,11 +91,9 @@ class WindowsEngine(BaseEngine):
                             try:
                                 port_num = int(rule.replace(":", ""))
                                 if packet.src_port == port_num or packet.dst_port == port_num:
-                                    self.rules_signal.emit(
-                                        f"Packet Blocked by Port Rule {rule}"
-                                    )
+                                    self.rules_signal.emit(f"Packet Blocked by Port Rule {rule}")
                                     log_to_file(
-                                        f"Blocked by Port Rule {rule}: "
+                                        f"Blocked by Port {rule}: "
                                         f"{src_ip}:{packet.src_port} -> {dst_ip}:{packet.dst_port}",
                                         level="warning",
                                     )
@@ -113,20 +102,17 @@ class WindowsEngine(BaseEngine):
                             except ValueError:
                                 pass
 
-                        if ":" in rule and rule == f"{packet.src_addr}:{packet.src_port}":
-                            self.rules_signal.emit(
-                                f"Packet Blocked by IP:Port Rule {rule}"
-                            )
-                            log_to_file(f"Blocked by IP:Port {rule}", level="warning")
-                            blocked = True
-                            break
-                        if ":" in rule and rule == f"{packet.dst_addr}:{packet.dst_port}":
-                            self.rules_signal.emit(
-                                f"Packet Blocked by IP:Port Rule {rule}"
-                            )
-                            log_to_file(f"Blocked by IP:Port {rule}", level="warning")
-                            blocked = True
-                            break
+                        if ":" in rule:
+                            if rule == f"{packet.src_addr}:{packet.src_port}":
+                                self.rules_signal.emit(f"Packet Blocked by IP:Port Rule {rule}")
+                                log_to_file(f"Blocked by IP:Port {rule}", level="warning")
+                                blocked = True
+                                break
+                            if rule == f"{packet.dst_addr}:{packet.dst_port}":
+                                self.rules_signal.emit(f"Packet Blocked by IP:Port Rule {rule}")
+                                log_to_file(f"Blocked by IP:Port {rule}", level="warning")
+                                blocked = True
+                                break
 
                     if blocked:
                         continue
@@ -134,9 +120,8 @@ class WindowsEngine(BaseEngine):
                     w.send(packet)
 
         except Exception as e:
-            error_message = f"Firewall Error: {str(e)}"
-            self.rules_signal.emit(error_message)
-            log_to_file(error_message, level="error")
+            self.rules_signal.emit(f"Firewall Error: {e}")
+            log_to_file(f"Firewall Error: {e}", level="error")
 
     def stop(self):
         self.running = False
