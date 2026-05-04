@@ -29,7 +29,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 class FirewallGUI(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("CyberM4fia Firewall")
+        self.setWindowTitle("Firewall")
 
         icon_path = os.path.join(PROJECT_ROOT, "assets", "icon.png")
         if os.path.exists(icon_path):

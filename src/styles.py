@@ -26,7 +26,17 @@ QPushButton:disabled {
      color: #555;
      border: 1px solid #333;
 }
-QLineEdit, QTextEdit, QListWidget, QTableWidget {
+QLineEdit {
+     background-color: rgba(22, 27, 34, 0.8);
+     border: 1px solid #30363D;
+     color: #C9D1D9;
+     placeholder-text-color: #8B949E;
+     selection-background-color: rgba(1, 80, 50, 0.5);
+     border-radius: 6px;
+     padding: 6px;
+     font-size: 14px;
+}
+QTextEdit, QListWidget, QTableWidget {
      background-color: rgba(22, 27, 34, 0.8);
      border: 1px solid #30363D;
      color: #C9D1D9;
