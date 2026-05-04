@@ -3,7 +3,7 @@ import socket
 from urllib.parse import urlparse
 
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QColor, QIcon, QPalette
 from PyQt5.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -100,6 +100,11 @@ class FirewallGUI(QMainWindow):
         layout.addWidget(self.web_list)
         layout.addLayout(website_layout)
         self.main_widget.setLayout(layout)
+
+        for _inp in (self.rule_input, self.website_input):
+            _pal = _inp.palette()
+            _pal.setColor(QPalette.PlaceholderText, QColor(72, 79, 88))
+            _inp.setPalette(_pal)
 
         self.firewall_worker = None
         self.rules = []

@@ -30,7 +30,7 @@ QLineEdit {
      background-color: rgba(22, 27, 34, 0.8);
      border: 1px solid #30363D;
      color: #C9D1D9;
-     placeholder-text-color: #8B949E;
+     placeholder-text-color: #484F58;
      selection-background-color: rgba(1, 80, 50, 0.5);
      border-radius: 6px;
      padding: 6px;
@@ -48,7 +48,7 @@ QTextEdit, QListWidget, QTableWidget {
 QLabel {
      font-size: 15px;
      font-weight: bold;
-     color: #58A6FF;
+     color: #F0F6FC;
      padding: 4px 0;
 }
 QHeaderView::section {
