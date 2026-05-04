@@ -1,103 +1,109 @@
-<div align="center">
+<h1 align="center">cyberm4fia-firewall</h1>
 
-```
- _______   _______ ______________  ___  ___ ______ _____  ___  
-/  __ \ \ / / ___ \  ___| ___ \  \/  | /   ||  ___|_   _|/ _ \ 
-| /  \/\ V /| |_/ / |__ | |_/ / .  . |/ /| || |_    | | / /_\ \
-| |     \ / | ___ \  __||    /| |\/| / /_| ||  _|   | | |  _  |
-| \__/\ | | | |_/ / |___| |\ \| |  | \___  || |    _| |_| | | |
- \____/ \_/ \____/\____/\_| \_\_|  |_/   |_/\_|    \___/\_| |_/
+<p align="center">
+  <img src="https://img.shields.io/badge/mission-kernel%20level%20packet%20control-red?style=for-the-badge" alt="mission">
+</p>
 
-</div>
+<table align="center"><tr><td valign="middle">
+<pre>
+ ██████ ██    ██ ██████  ███████ ██████  ███    ███ ██   ██ ███████ ██  █████  
+██       ██  ██  ██   ██ ██      ██   ██ ████  ████ ██   ██ ██      ██ ██   ██ 
+██        ████   ██████  █████   ██████  ██ ████ ██ ███████ █████   ██ ███████ 
+██         ██    ██   ██ ██      ██   ██ ██  ██  ██      ██ ██      ██ ██   ██ 
+ ██████    ██    ██████  ███████ ██   ██ ██      ██      ██ ██      ██ ██   ██ 
+</pre>
+</td><td valign="middle">
+<img src="https://raw.githubusercontent.com/erkanrzgc/ai-house/main/resources/icons/icon_256.png" width="150">
+</td></tr></table>
 
-<div align="center">
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.11+-blue?style=flat-square&logo=python" alt="python">
+  <img src="https://img.shields.io/badge/platform-windows%20%7C%20linux-purple?style=flat-square" alt="platform">
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="license">
+  <img src="https://img.shields.io/badge/engines-NFQUEUE%20%7C%20WinDivert-orange?style=flat-square" alt="engines">
+  <img src="https://img.shields.io/github/last-commit/erkanrzgc/firewall?style=flat-square" alt="last commit">
+</p>
 
-[![Python](https://img.shields.io/badge/python-3.11+-blue?style=flat-square&logo=python)](https://python.org)
-[![Platform](https://img.shields.io/badge/platform-windows%20%7C%20linux-purple?style=flat-square)](https://github.com/erkanrzgc/firewall)
-[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](./LICENSE)
-[![PyQt5](https://img.shields.io/badge/GUI-PyQt5-darkgreen?style=flat-square)](https://riverbankcomputing.com/software/pyqt)
-[![Linux Engine](https://img.shields.io/badge/engine-NFQUEUE%20%2B%20scapy-orange?style=flat-square)](./src/cores/linux.py)
-[![Windows Engine](https://img.shields.io/badge/engine-WinDivert%20%2B%20pydivert-blue?style=flat-square)](./src/cores/windows.py)
-
-</div>
-
----
-
-**cyberm4fia-firewall** is a cross-platform real-time packet filtering engine with a clean PyQt5 dark-theme GUI. Intercepts TCP/UDP traffic at the kernel level, applies user-defined rules, and blocks threats — works on both Windows and Linux with automatic platform detection.
+<p align="center">
+  <b>cyberm4fia-firewall</b> is a cross-platform real-time packet filtering engine with a dark-theme PyQt5 GUI, featuring kernel-level traffic interception, DDoS protection, and website blocking — for both Windows and Linux.
+</p>
 
 ---
 
 ## Features
 
-| Category | Feature | Description |
-|----------|---------|-------------|
-| 🔥 **Packet Capture** | Kernel-level interception | Windows: WinDivert · Linux: iptables + NFQUEUE |
-| 🚫 **Rule Engine** | Protocol · Port · IP:Port | `tcp` `udp` `:80` `192.168.1.1:443` |
-| 🌐 **Website Blocker** | DNS-resolved domain blocking | Enter domain → resolves IP → blocks all traffic |
-| ⚡ **DDoS Protection** | Automated blacklisting | 10k pkt/s or 50k pkt/10s → 60s ban |
-| 🧵 **Multi-Threaded** | GUI + engine separation | PyQt5 QThread for non-blocking UI |
-| 📝 **Logging** | Full event audit | Stored in `logs/firewall.log` |
-| 🎨 **Dark UI** | Custom QSS theme | GitHub-dark inspired with CyberM4fia accents |
-| 🔄 **Cross-Platform** | Auto engine selection | Detects OS at runtime, loads correct backend |
+### Packet Interception & Filtering
+| Capability | Engine | Description |
+|---|---|---|
+| TCP/UDP Capture | NFQUEUE · WinDivert | Kernel-level packet interception on all interfaces |
+| Protocol Blocking | `tcp` `udp` rules | Block entire protocol families with a single rule |
+| Port Filtering | `:80` `:443` `:22` | Src/dst port matching for granular control |
+| IP:Port Rules | `192.168.1.1:443` | Pinpoint blocking of specific endpoints |
+| Website Blocking | DNS-resolved domains | Enter URL → resolve to IP → block all traffic |
+
+### Defense & Monitoring
+| Feature | Mechanism | Description |
+|---|---|---|
+| DDoS Protection | 10k/1s · 50k/10s thresholds | Auto-blacklist offending IPs for 60 seconds |
+| Real-Time GUI | PyQt5 QThread architecture | Non-blocking UI with live traffic table |
+| Event Logging | `logs/firewall.log` | Full audit trail of all packets and actions |
+| Whitelist | `127.0.0.1` `::1` | Localhost traffic always permitted |
+
+### Cross-Platform Engine
+| Platform | Backend | Kernel Interface |
+|---|---|---|
+| 🐧 Linux | `src/cores/linux.py` | iptables NFQUEUE + scapy packet parser |
+| 🪟 Windows | `src/cores/windows.py` | WinDivert driver + pydivert bindings |
 
 ---
 
 ## Architecture
 
 ```
-┌──────────────┐     create_engine()     ┌────────────────┐
-│   src/gui.py  │ ─────────────────────▶ │  src/cores/    │
-│  FirewallGUI  │                        │  __init__.py   │
-│  (QMainWindow)│                        │  (Factory)     │
-└──────────────┘                        └───────┬────────┘
-                                                │
-                     ╭──────────────────────────┼──────────────────────────╮
-                     │                          │                          │
-             ┌───────▼────────┐        ┌────────▼─────────┐
-             │  src/cores/     │        │  src/cores/       │
-             │  linux.py       │        │  windows.py       │
-             │                 │        │                   │
-             │  NetfilterQueue │        │  pydivert         │
-             │  + scapy        │        │  + WinDivert      │
-             │  + iptables     │        │                   │
-             └───────┬────────┘        └───────────────────┘
-                     │
-                     │  🐧 Linux only
-                     │
-      ┌──────────────┼──────────────┐
-      │              │              │
-      ▼              ▼              ▼
- ┌─────────┐  ┌──────────┐  ┌──────────┐
- │ iptables│  │ NFQUEUE  │  │  scapy   │
- │ rules   │  │ Queue 0  │  │  parser  │
- └─────────┘  └──────────┘  └──────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                     firewall.py (entry)                      │
+│              Root check · Locale · Launch                    │
+└───────────────────────────┬──────────────────────────────────┘
+                            │
+                    ┌───────▼────────┐
+                    │   src/main.py   │
+                    │  QApplication   │
+                    │  GUI Bootstrap  │
+                    └───────┬────────┘
+                            │
+              ┌─────────────┼─────────────┐
+              │             │             │
+     ┌────────▼──────┐ ┌───▼────┐ ┌──────▼──────┐
+     │  src/gui.py   │ │ src/  │ │  src/cores/ │
+     │  FirewallGUI  │ │styles │ │  ┌─────────┐│
+     │  (QMainWindow)│ │ .py   │ │  │ base.py ││
+     └───────┬───────┘ └───────┘ │  │ (Engine)││
+             │                   │  ├─────────┤│
+             │  create_engine()  │  │linux.py ││ ─── NFQUEUE + scapy + iptables
+             └─────────────────► │  ├─────────┤│
+                                 │  │win.py   ││ ─── pydivert / WinDivert
+                                 │  └─────────┘│
+                                 └─────────────┘
 ```
 
 ### Linux Packet Flow
 
 ```
- Network → iptables → NFQUEUE → Python Callback → scapy IP parse
-    │                                                    │
-    │                                           ┌────────┴────────┐
-    │                                           │                 │
-    │                                      ACCEPT              DROP
-    │                                     (forward)           (block)
-    │                                         │                 │
-    └─────────────────────────────────────────┘                 │
-                                                               │
-                                                        packet discarded
+Network Stack → iptables (NFQUEUE) → Queue #0 → Python Callback
+                                                        │
+                                              ┌─────────┴─────────┐
+                                              │                   │
+                                         ACCEPT (allow)      DROP (block)
 ```
 
-**iptables rules — auto-added on start:**
+**iptables rules — auto-added on start, cleaned up on stop:**
 
-| Chain | Protocol | Action |
-|-------|----------|--------|
-| `INPUT` | tcp | `-j NFQUEUE --queue-num 0 --queue-bypass` |
-| `INPUT` | udp | `-j NFQUEUE --queue-num 0 --queue-bypass` |
-| `OUTPUT` | tcp | `-j NFQUEUE --queue-num 0 --queue-bypass` |
-| `OUTPUT` | udp | `-j NFQUEUE --queue-num 0 --queue-bypass` |
-
-All rules are cleaned up on stop. `--queue-bypass` ensures traffic flows normally if the app exits.
+```bash
+iptables -A INPUT  -p tcp -j NFQUEUE --queue-num 0 --queue-bypass
+iptables -A INPUT  -p udp -j NFQUEUE --queue-num 0 --queue-bypass
+iptables -A OUTPUT -p tcp -j NFQUEUE --queue-num 0 --queue-bypass
+iptables -A OUTPUT -p udp -j NFQUEUE --queue-num 0 --queue-bypass
+```
 
 ---
 
@@ -106,10 +112,7 @@ All rules are cleaned up on stop. `--queue-bypass` ensures traffic flows normall
 ### 🐧 Linux
 
 ```bash
-# Install dependencies
 sudo apt install python3-pyqt5 python3-scapy python3-netfilterqueue iptables
-
-# Clone & run
 git clone https://github.com/erkanrzgc/firewall.git
 cd firewall
 sudo python3 firewall.py
@@ -132,23 +135,23 @@ python firewall.py
 
 ### Rule Format
 
-| Type | Syntax | Example | Effect |
+| Type | Syntax | Example | Blocks |
 |------|--------|---------|--------|
-| Protocol | `tcp` | `tcp` | Block all TCP traffic |
-| Protocol | `udp` | `udp` | Block all UDP traffic |
-| Port | `:PORT` | `:80` | Block src/dst port 80 |
-| Port (short) | `PORT` | `443` | Auto-converted to `:443` |
-| IP:Port | `IP:PORT` | `192.168.1.5:22` | Block specific IP + port |
+| Protocol | `tcp` | `tcp` | All TCP traffic |
+| Protocol | `udp` | `udp` | All UDP traffic |
+| Port | `:PORT` | `:80` | Src or dst port 80 |
+| Port (short) | `PORT` | `443` | Auto → `:443` |
+| IP:Port | `IP:PORT` | `192.168.1.5:22` | Specific IP + port |
 
 ### GUI Sections
 
-| Section | Function |
-|---------|----------|
-| **Start / Stop** | Begin/end packet capture. Enables/disables iptables rules. |
-| **Rules** | Add, view, delete filtering rules. |
-| **Network Traffic** | Real-time table of captured packets (Src IP, Dst IP, Protocol). |
-| **Applied Rules** | Scrollable log of all events, blocks, and DDoS detections. |
-| **Blocked Websites** | Enter domain → resolved to IP → added to blacklist. |
+| Section | What It Shows |
+|---------|---------------|
+| **Start / Stop** | Toggle packet capture. Enables/disables kernel rules. |
+| **Rules** | Add, view, delete filtering rules with validation. |
+| **Network Traffic** | Real-time table — Source IP, Destination IP, Protocol. |
+| **Applied Rules** | Scrollable event log — blocks, DDoS detections, rule changes. |
+| **Blocked Websites** | Domain → resolved IP → blacklist with display. |
 
 ---
 
@@ -159,7 +162,7 @@ cyberm4fia-firewall/
 │
 ├── firewall.py              Entry point (sudo python3 firewall.py)
 ├── assets/
-│   └── icon.png             Application icon
+│   └── icon.png             Application icon (256×256)
 ├── logs/
 │   └── .gitkeep             Runtime log directory
 ├── src/
@@ -184,19 +187,14 @@ cyberm4fia-firewall/
 
 Settings in `src/cores/linux.py` / `src/cores/windows.py`:
 
-```python
-# DDoS thresholds
-SHORT_WINDOW = 10000       # packets per second
-LONG_WINDOW  = 50000       # packets per 10 seconds
+| Threshold | Default | Description |
+|-----------|---------|-------------|
+| `SHORT_WINDOW` | 10000 | Packets per second for DDoS detection |
+| `LONG_WINDOW` | 50000 | Packets per 10 seconds for DDoS detection |
+| `BLACKLIST_TIMEOUT` | 60 | Seconds before IP auto-removal |
+| `whitelist` | `127.0.0.1` `::1` | Always-permitted addresses |
 
-# Blacklist auto-removal
-BLACKLIST_TIMEOUT = 60     # seconds
-
-# Whitelist (always permitted)
-self.whitelist = ["127.0.0.1", "::1"]
-```
-
-UI styles in `src/styles.py` — colors, fonts, padding, hover effects.
+UI styling in `src/styles.py` — colors, fonts, padding, hover effects.
 
 ---
 
@@ -204,25 +202,17 @@ UI styles in `src/styles.py` — colors, fonts, padding, hover effects.
 
 | Issue | Solution |
 |-------|----------|
-| `sudo: password required` | Run with `sudo python3 firewall.py` |
-| `iptables: command not found` | `sudo apt install iptables` |
+| `sudo` required | `sudo python3 firewall.py` |
+| `iptables` not found | `sudo apt install iptables` |
 | `NetfilterQueue` import error | `pip install NetfilterQueue` or `apt install python3-netfilterqueue` |
-| GUI won't start | Check `$DISPLAY`: `echo $DISPLAY` |
-| No traffic captured | Verify rules: `sudo iptables -L -n \| grep NFQUEUE` |
-| Logs not writing | Check `logs/firewall.log` permissions |
+| GUI won't start | Check `$DISPLAY` is set |
+| No traffic captured | `sudo iptables -L -n \| grep NFQUEUE` |
+| Logs not writing | Verify `logs/` directory permissions |
 
 ---
 
 ## License
 
-MIT License — see [LICENSE](./LICENSE).
+MIT License — see [LICENSE](./LICENSE) for details.
 
-<div align="center">
-
-```
-  ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄ 
-  █  CyberM4fia Firewall · linux + windows · 2025  █
-  ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀ 
-```
-
-</div>
+<sub>Copyright (c) 2025 · ERKAN RISNGITS</sub>
