@@ -14,7 +14,7 @@
  ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝     ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝
 </pre>
 </td><td valign="middle">
-<img src="https://raw.githubusercontent.com/erkanrzgc/ai-house/main/resources/icons/icon_256.png" width="150">
+<img src="https://raw.githubusercontent.com/erkanrzgc/cyberm4fia-firewall/main/assets/icon.png" width="150">
 </td></tr></table>
 
 <p align="center">
